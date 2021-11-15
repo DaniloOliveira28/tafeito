@@ -44,7 +44,7 @@ Modelo: [babel.config.js](../babel.config.js)
 Modulo para realizar o build e servir o projeto
 
 ```
-npm install --save-dev webpack react-refresh webpack-cli webpack-dev-server @pmmmwh/react-refresh-webpack-plugin source-map-loader html-webpack-plugin fork-ts-checker-webpack-plugin cross-env
+npm install --save-dev webpack react-refresh webpack-cli webpack-dev-server @pmmmwh/react-refresh-webpack-plugin source-map-loader html-webpack-plugin fork-ts-checker-webpack-plugin cross-env dotenv-webpack
 
 ```
 Criar configuração do webpack "webpack.config" na raiz 
@@ -62,7 +62,10 @@ Configurar o styled component, seguindo esses [passos](https://mui.com/guides/st
 
 Storybook
 
-TODO
+```
+npm install -D storybook/addon-actions storybook/addon-essentials storybook/addon-links storybook/react
+```
+
 
 Testes
 
