@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Box, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Box, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import TextField from '../TextField';
 import Button from '../Button';
+import axios from 'axios';
+import Snackbar from '@mui/material/Snackbar';
 
 import { StyledCard, StyledCardContent } from './styles';
 
@@ -13,6 +15,8 @@ interface IValues {
 };
 
 const LoginForm = () => {
+
+  const [openSnackbar, setOpenSnackbar] = useState(false)
   const [values, setValues] = useState<IValues>({
     username: '',
     password: '',
@@ -23,6 +27,8 @@ const LoginForm = () => {
     username: false,
     password: false
   })
+
+  const [isLoading, setIsLoading] = useState(false);
 
   const checkErrorValues = () => {
     setErrorForm({
@@ -45,9 +51,36 @@ const LoginForm = () => {
   const loginUser = () => {
     checkErrorValues();
     if(!(values.username === '') && !(values.password === '')) {
+      setIsLoading(true)
       console.log('user', values.username, 'pw', values.password)
+      const vars = {
+        login: values.username,
+        senha: values.password
+      }
+      axios.post('http://localhost:8080/usuarios/login', vars)
+      .then(response => {
+        alert('LOGADO');
+        setIsLoading(false);
+      }).catch(err =>{
+        console.error(err);
+        setIsLoading(false);
+        setOpenSnackbar(true);
+      }
+        );
+      
     }
   }
+
+  const handleClose = (
+    event: React.SyntheticEvent | React.MouseEvent,
+    reason?: string,
+  ) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+
+    setOpenSnackbar(false);
+  };
 
   return (
     <Box display='flex' justifyContent={'center'} alignItems={'center'} height="100vh" >
@@ -96,12 +129,19 @@ const LoginForm = () => {
               )}}
           />
           <Button
-            
+            disabled={isLoading}
           sx={{marginY: '16px'}}  fullWidth variant={'contained'} 
           onClick={() => { loginUser()}}
-          >Entrar</Button>
+          >{
+            !isLoading ? 'Entrar' : <CircularProgress size={24}  color={'info'}/>}</Button>
         </StyledCardContent>
       </StyledCard>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={6000}
+        onClose={handleClose}
+        message="Usuário/Senha incorretos"
+      />
     </Box>
   )
 }
