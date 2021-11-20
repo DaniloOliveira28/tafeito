@@ -36,7 +36,7 @@ npm install --save-dev @babel/core @babel/preset-env @babel/preset-react @babel/
 
 ```
 
-Criar configuração do webpack "webpack.config" na raiz 
+Criar configuração do babel "babel.config" na raiz 
 
 Modelo: [babel.config.js](../babel.config.js)
 
