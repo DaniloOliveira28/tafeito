@@ -25,7 +25,7 @@ npm i --save-dev typescript @types/react @types/react-dom type-fest
 
 Criar configuração do tscript "tsconfig.json" na raiz 
 
-Modelo: [tsconfig.json]()
+Modelo: [tsconfig.json](../tsconfig.json)
 
 **Babel**
 
