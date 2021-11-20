@@ -25,7 +25,8 @@ module.exports = {
   devServer: {
     host: 'localhost',
     port: '3000',
-    hot: true
+    hot: true,
+    historyApiFallback: true
   },
   entry: [path.join(__dirname, '/src/index.tsx')],
   module: {
