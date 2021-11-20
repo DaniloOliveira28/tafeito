@@ -63,7 +63,7 @@ Configurar o styled component, seguindo esses [passos](https://mui.com/guides/st
 Storybook
 
 ```
-npm install -D storybook/addon-actions storybook/addon-essentials storybook/addon-links storybook/react
+npm install --save-dev @storybook/addon-actions @storybook/addon-essentials @storybook/addon-links @storybook/react
 ```
 
 
