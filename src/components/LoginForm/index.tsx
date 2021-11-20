@@ -6,16 +6,35 @@ import Button from '../Button';
 
 import { StyledCard, StyledCardContent } from './styles';
 
-const LoginForm = () => {
+interface IValues {
+  username: string;
+  password: string;
+  showPassword: boolean;
+};
 
-  const [values, setValues] = useState({
+const LoginForm = () => {
+  const [values, setValues] = useState<IValues>({
+    username: '',
+    password: '',
     showPassword: false
+  });
+
+  const [errorForm, setErrorForm] = useState({
+    username: false,
+    password: false
   })
 
-  const handleClickShowPassword = () => {
+  const checkErrorValues = () => {
+    setErrorForm({
+      username: values.username === '',
+      password: values.password === '',
+    });
+  };
+
+  const handleValues = (key:keyof IValues, value:string|boolean) => {
     setValues({
       ...values,
-      showPassword: !values.showPassword,
+      [key]: value,
     });
   };
 
@@ -23,6 +42,12 @@ const LoginForm = () => {
     event.preventDefault();
   };
 
+  const loginUser = () => {
+    checkErrorValues();
+    if(!(values.username === '') && !(values.password === '')) {
+      console.log('user', values.username, 'pw', values.password)
+    }
+  }
 
   return (
     <Box display='flex' justifyContent={'center'} alignItems={'center'} height="100vh" >
@@ -37,23 +62,31 @@ const LoginForm = () => {
         </StyledCardContent>
         <StyledCardContent>
           <TextField
+            helperText="Por favor, insira seu usuário"
+            error={errorForm.username}
             sx={{marginY: '8px'}} 
             fullWidth 
-            label="Email" 
+            label="Usuário" 
             variant="filled"
+            value={values.username}
+            onChange={(event:React.ChangeEvent<HTMLInputElement>) => {handleValues('username', event.target.value)}}
           />
           <TextField 
+            helperText="Por favor, insira sua senha"
+            error={errorForm.password}
             sx={{marginY: '8px'}} 
             fullWidth 
             label="Senha" 
             variant="filled" 
             type={values.showPassword ? 'text' : 'password'}
+            value={values.password}
+            onChange={(event:React.ChangeEvent<HTMLInputElement>) => {handleValues('password', event.target.value)}}
             InputProps={{
               endAdornment:(
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={handleClickShowPassword}
+                    onClick={() => {handleValues('showPassword', !values.showPassword)}}
                     onMouseDown={handleMouseDownPassword}
                     edge="end"
                   >
@@ -62,7 +95,11 @@ const LoginForm = () => {
                 </InputAdornment>
               )}}
           />
-          <Button sx={{marginY: '16px'}}  fullWidth variant={'contained'} >Entrar</Button>
+          <Button
+            
+          sx={{marginY: '16px'}}  fullWidth variant={'contained'} 
+          onClick={() => { loginUser()}}
+          >Entrar</Button>
         </StyledCardContent>
       </StyledCard>
     </Box>
