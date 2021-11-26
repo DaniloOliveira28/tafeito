@@ -1,10 +1,16 @@
 import React from 'react';
 import LoginForm from '../../components/LoginForm'
-const Login = () => {
 
+type LoginProps = {
+  updateToken: (token:string|null) => void
+}
+const Login = (props:LoginProps) => {
+  const {
+    updateToken
+  } = props;
   return (
     <>
-      <LoginForm />
+      <LoginForm updateToken={updateToken} />
     </>
   )
 }

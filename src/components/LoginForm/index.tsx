@@ -5,7 +5,6 @@ import TextField from '../TextField';
 import Button from '../Button';
 import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
-
 import { StyledCard, StyledCardContent } from './styles';
 
 interface IValues {
@@ -14,7 +13,19 @@ interface IValues {
   showPassword: boolean;
 };
 
-const LoginForm = () => {
+type LoginFormProps = {
+  updateToken: (token:string|null) => void
+}
+
+type responseProps = {
+  autenticacao: string
+}
+
+const LoginForm = (props:LoginFormProps) => {
+
+  const {
+    updateToken
+  } = props;
 
   const [openSnackbar, setOpenSnackbar] = useState(false)
   const [values, setValues] = useState<IValues>({
@@ -29,7 +40,7 @@ const LoginForm = () => {
   })
 
   const [isLoading, setIsLoading] = useState(false);
-
+  
   const checkErrorValues = () => {
     setErrorForm({
       username: values.username === '',
@@ -52,14 +63,14 @@ const LoginForm = () => {
     checkErrorValues();
     if(!(values.username === '') && !(values.password === '')) {
       setIsLoading(true)
-      console.log('user', values.username, 'pw', values.password)
       const vars = {
         login: values.username,
         senha: values.password
       }
       axios.post('http://localhost:8080/usuarios/login', vars)
-      .then(response => {
-        alert('LOGADO');
+      .then((response) => {
+        const data:responseProps = response.data; 
+        updateToken(data.autenticacao);
         setIsLoading(false);
       }).catch(err =>{
         console.error(err);
