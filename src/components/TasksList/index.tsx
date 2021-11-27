@@ -27,6 +27,10 @@ type ResponseDeleteTask = {
 
 }
 
+type ResponsePatchTask = {
+
+}
+
 export default function TasksList(props:TasksListProps) {
   const {
     category,
@@ -51,21 +55,41 @@ export default function TasksList(props:TasksListProps) {
 
   const {
     commit: commitTask,
-    loading: loadingTask,
-    response: taskId,
-    error: errorTask,
+    response: taskId
   } = useAxios<ResponseDeleteTask>({
     method: 'DELETE',
     path: `tarefas`
+  });
+
+  const {
+    commit: commitFinishTask,
+  } = useAxios<ResponsePatchTask>({
+    method: 'POST',
+    path: `tarefas/:id/concluir`
+  });
+
+  const {
+    commit: commitReopenTask,
+  } = useAxios<ResponsePatchTask>({
+    method: 'POST',
+    path: `tarefas/:id/reabrir`
   });
 
   const deleteTask = (taskId:number) => {
     commitTask({}, updateTasks, `tarefas/${taskId}`)
   }
 
+  const updateTaskStatus = (taskId:number, status:boolean) => {
+    if(status === true) {
+      commitFinishTask({}, updateTasks, `tarefas/${taskId}/concluir`)
+    } else {
+      commitReopenTask({}, updateTasks, `tarefas/${taskId}/reabrir`)
+    }
+  }
+
   return (
     <>
-    <Typography variant='h4'>
+    <Typography variant='h4' >
       {category.descricao}
     </Typography>
     <List sx={{ width: '100%', bgcolor: 'background.paper' }}>
@@ -104,9 +128,10 @@ export default function TasksList(props:TasksListProps) {
                   tabIndex={-1}
                   disableRipple
                   inputProps={{ 'aria-labelledby': labelId }}
+                  onChange={(event:React.ChangeEvent<HTMLInputElement>) => updateTaskStatus(task.id, event.target.checked)}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={task.descricao} />
+              <ListItemText id={labelId} primary={task.descricao} sx={{textDecoration:task.concluida ? 'line-through' : 'none'}}/>
             </ListItemButton>
           </ListItem>
         );
