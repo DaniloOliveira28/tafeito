@@ -14,7 +14,7 @@ interface useAxiosProps {
 }
 
 type ResponseAxios<T> =  {
-  commit: (data?:object | undefined, cb?:()=> void) => void ;
+  commit: (data?:object | undefined, cb?:()=> void, newPath?:string, ) => void ;
   response: T | null;
   error: string;
   loading: boolean;
@@ -22,7 +22,7 @@ type ResponseAxios<T> =  {
 
 const baseUrl = 'http://localhost:8080/';
 
-export const useAxios = <T>({ method, path}: useAxiosProps):ResponseAxios<T> => {
+export const useAxios = <T>({ method, path }: useAxiosProps):ResponseAxios<T> => {
   let navigate = useNavigate();
   const [, setTokenObj] = useLocalStorage<TokenProps>("token", {token:null});
 
@@ -30,7 +30,7 @@ export const useAxios = <T>({ method, path}: useAxiosProps):ResponseAxios<T> => 
   const [error, setError] = useState('');
   const [loading, setloading] = useState(false);
 
-  const commit = (data?:object | undefined, cb?:()=> void) => {
+  const commit = (data?:object | undefined, cb?:()=> void, newPath?:string) => {
     setloading(true);
     const item = window.localStorage.getItem('token');
     const tokenObj: TokenProps = JSON.parse(item!);
@@ -42,7 +42,7 @@ export const useAxios = <T>({ method, path}: useAxiosProps):ResponseAxios<T> => 
 
     axios({
       method, 
-      url: `${baseUrl}${path}`,
+      url: `${baseUrl}${newPath ? newPath : path}`,
       headers,
       data
     })

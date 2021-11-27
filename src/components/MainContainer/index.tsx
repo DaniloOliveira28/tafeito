@@ -44,7 +44,7 @@ const MainContainer = () => {
 
       <StyledStack spacing={2} mt={2}>
         {categories ? <TaskInput categories={categories} updateTasks={updateTasks}/> : <Skeleton />}
-        {categories && tasks ? <TasksListWrapper categories={categories} tasks={tasks}/> : <Box width={'100%'} textAlign='center'><CircularProgress /></Box>}
+        {categories && tasks ? <TasksListWrapper updateTasks={updateTasks} categories={categories} tasks={tasks}/> : <Box width={'100%'} textAlign='center'><CircularProgress /></Box>}
       </StyledStack>
     </Box>
   )
