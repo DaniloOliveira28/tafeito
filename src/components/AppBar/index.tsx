@@ -1,16 +1,25 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import { AppBar as MuiAppBar, 
         Toolbar, 
         Typography,
         IconButton,
         MenuItem,
-        Menu } from "@mui/material";
+        Menu,
+        Skeleton,
+        Box } from "@mui/material";
+
+import { TokenProps } from '../../common/types';
 
 import AccountCircle from '@mui/icons-material/AccountCircle';
+import axios from 'axios';
 
 type AppBarProps = {
   updateToken: (token:string|null) => void
+}
+
+type responseProps = {
+  nome: string;
 }
 
 const AppBar = (props:AppBarProps) => {
@@ -20,7 +29,7 @@ const AppBar = (props:AppBarProps) => {
   } = props;
 
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-
+  const [name, setName] = useState<null| string>(null);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -35,13 +44,34 @@ const AppBar = (props:AppBarProps) => {
     updateToken(null);
   }
 
+  const loadName = (tokenObj:TokenProps) => {
+    axios.get('http://localhost:8080/usuarios/logado', { headers: {"Authorization" : `Bearer ${tokenObj!.token}`} })
+      .then((response) => {
+        const data:responseProps = response.data; 
+        setName(data.nome);
+      }).catch(err =>{
+        console.error(err);
+      }
+    );
+  }
+
+  useEffect(() => {
+    const item = window.localStorage.getItem('token');
+    const tokenObj: TokenProps = JSON.parse(item!);
+    loadName(tokenObj)
+  }, [])
+
   return (
     <MuiAppBar position="static">
       <Toolbar>
-
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          Tafeito
-        </Typography>
+        <Box display='flex' flexGrow={1}>
+          <Typography variant="h6" component="div" sx={{marginRight: '16px'}}>
+            Tafeito
+          </Typography>
+          <Typography variant="h6" component="div">
+            {name ? `Bem-vindx ${name}` : <Skeleton />}
+          </Typography>
+        </Box>
         <div>
             <IconButton
               size="large"
