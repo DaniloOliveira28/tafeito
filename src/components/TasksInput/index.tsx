@@ -19,12 +19,12 @@ const TaskInput = () => {
     <Stack direction={'row'} spacing={2} alignItems="center" justifyContent='center'>
       <Box sx={{ minWidth: 120 }}>
         <FormControl fullWidth>
-          <InputLabel id="select-label">Age</InputLabel>
+          <InputLabel id="select-label">Categoria</InputLabel>
           <Select
             labelId="select-label"
             id="select"
             value={category}
-            label="Age"
+            label="Categoria"
             onChange={handleChange}
           >
             <MenuItem value={'Pessoal'}>Pessoal</MenuItem>
@@ -32,7 +32,7 @@ const TaskInput = () => {
           </Select>
         </FormControl>
       </Box>
-      <Box sx={{ minWidth: '432px' }}>
+      <Box display='flex' flexGrow={1}>
         <TextField
           id="task-text"
           label="O que você precisa fazer?"

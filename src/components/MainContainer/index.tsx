@@ -1,16 +1,20 @@
 
 import React from 'react';
-import { Stack } from "@mui/material";
+import { Box } from "@mui/material";
 import TaskInput from "../TasksInput";
-import TasksList from "../TasksList";
+import TasksListWrapper from "../TasksListWrapper";
 
+import { StyledStack } from './styles';
 const MainContainer = () => {
 
   return (
-      <Stack spacing={2} mt={2}>
+    <Box display='flex' justifyContent='center'>
+
+      <StyledStack spacing={2} mt={2}>
         <TaskInput />
-        <TasksList />
-      </Stack>
+        <TasksListWrapper />
+      </StyledStack>
+    </Box>
   )
 };
 
