@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import axios from 'axios';
 
 import { AppBar as MuiAppBar, 
         Toolbar, 
@@ -8,11 +9,12 @@ import { AppBar as MuiAppBar,
         Menu,
         Skeleton,
         Box } from "@mui/material";
-
-import { TokenProps } from '../../common/types';
-
 import AccountCircle from '@mui/icons-material/AccountCircle';
-import axios from 'axios';
+
+import DialogName from '../DialogName';
+import { TokenProps } from '../../common/types';
+import { SignalCellularNull } from '@mui/icons-material';
+
 
 type AppBarProps = {
   updateToken: (token:string|null) => void
@@ -28,8 +30,12 @@ const AppBar = (props:AppBarProps) => {
     updateToken
   } = props;
 
+  const item = window.localStorage.getItem('token');
+  const tokenObj: TokenProps = JSON.parse(item!);
+
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [name, setName] = useState<null| string>(null);
+  const [openedNameDialog, setOpenedNameDialog] = useState<boolean>(false);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
@@ -44,7 +50,7 @@ const AppBar = (props:AppBarProps) => {
     updateToken(null);
   }
 
-  const loadName = (tokenObj:TokenProps) => {
+  const loadName = () => {
     axios.get('http://localhost:8080/usuarios/logado', { headers: {"Authorization" : `Bearer ${tokenObj!.token}`} })
       .then((response) => {
         const data:responseProps = response.data; 
@@ -55,11 +61,31 @@ const AppBar = (props:AppBarProps) => {
     );
   }
 
+  const updateName = (newName:string) => {
+    axios.put('http://localhost:8080/usuarios/logado/nome', 
+    {
+      "nome": newName
+    },{ 
+        headers: {"Authorization" : `Bearer ${tokenObj!.token}`}
+     })
+      .then(() => {
+        setName(newName);
+      }).catch(err =>{
+        console.error(err);
+      }
+    );
+  };
+
+  const changeName = () => {
+    setAnchorEl(null);
+
+    setOpenedNameDialog(true);
+  }
+
   useEffect(() => {
-    const item = window.localStorage.getItem('token');
-    const tokenObj: TokenProps = JSON.parse(item!);
-    loadName(tokenObj)
+    loadName()
   }, [])
+
 
   return (
     <MuiAppBar position="static">
@@ -98,10 +124,17 @@ const AppBar = (props:AppBarProps) => {
               open={Boolean(anchorEl)}
               onClose={handleClose}
             >
+              <MenuItem onClick={changeName}>Alterar Nome</MenuItem>
               <MenuItem onClick={logout}>Sair</MenuItem>
             </Menu>
           </div>
       </Toolbar>
+      {name ? <DialogName 
+        open={openedNameDialog} 
+        setOpen={(status) => setOpenedNameDialog(status)} 
+        currentName={name} 
+        updateName={(newName:string) => {updateName(newName)}}
+      /> : null}
     </MuiAppBar>
   )
 }
