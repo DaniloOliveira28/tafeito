@@ -1,8 +1,13 @@
+export type Tag = {
+  color: string;
+  etiqueta: string;
+}
+
 export type Task = {
   "id": number;
   "descricao": string;
   "concluida": boolean;
-  "etiquetas": string[];
+  "etiquetas": Tag[];
   "anexos": string[];
   "id_categoria": number;
 }
