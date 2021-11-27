@@ -5,17 +5,23 @@ import Tasks from '../../screens/Tasks';
 
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useNavigate } from 'react-router-dom';
+import { TokenProps } from '../../common/types';
 
 
 const App = () => {
-  const [token, setToken] = useLocalStorage<string|null>("token", null);
+  const [tokenObj, setTokenObj] = useLocalStorage<TokenProps>("token", {token:null});
   let navigate = useNavigate();
 
   useEffect(() => {
     function checkTokenData() {
-      const token = localStorage.getItem('token')
-      if (token && token !== 'null') {
-        navigate('/tasks');
+      const localToken = localStorage.getItem('token');
+      if (localToken) {
+        const localTokenObj:TokenProps = JSON.parse(localToken);
+        if(localTokenObj.token){
+          navigate('/tasks');
+        } else {
+          navigate('/login');
+        }
       } else {
         navigate('/login');
       }
@@ -29,17 +35,17 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    if (token) {
+    if (tokenObj.token !== null) {
       navigate('/tasks');
     } else {
       navigate('/login');
     }
-  }, [token]);
+  }, [tokenObj]);
 
   return (
     <Routes>
-      <Route path="/login" element={<Login updateToken={(newToken) =>  setToken(newToken)} />} />
-      <Route path="/tasks" element={<Tasks updateToken={(newToken) =>  setToken(newToken)}/>} />
+      <Route path="/login" element={<Login updateToken={(token) =>  setTokenObj({token})} />} />
+      <Route path="/tasks" element={<Tasks updateToken={(token) =>  setTokenObj({token})}/>} />
       <Route path="*" element={<div>not found</div>} />
     </Routes>
   );
