@@ -7,38 +7,18 @@ import {Task, Category} from '../../common/types';
 
 
 type TupleCatTasks = [Category, Task[]]
-const TasksListWrapper = () => {
 
-  const [loading, setLoading] = useState(true);
-
-  const {
-    commit: commitTasks,
-    loading: loadingTasks,
-    response: tasks,
-    error: errorTasks,
-  } = useAxios<Task[]>({
-    method: 'GET',
-    path: 'tarefas'
-  });
+type TasksListWrapperProps = {
+  categories: Category[];
+  tasks: Task[];
+}
+const TasksListWrapper = (props:TasksListWrapperProps) => {
 
   const {
-    commit: commitCategories,
-    loading: loadingCategories,
-    response: categories,
-    error: errorCategories,
-  } = useAxios<Category[]>({
-    method: 'GET',
-    path: 'categorias'
-  });
+    categories,
+    tasks
+  } = props;
 
-  const loadData = async () => {
-    commitCategories();
-    commitTasks();
-  }
-
-  useEffect(() => {
-    loadData();
-  }, [])
 
   const getTasks = () => {
     if(tasks && categories) {
@@ -47,8 +27,7 @@ const TasksListWrapper = () => {
         const catTasks = tasks.filter(task => task.id_categoria === category.id);
         return [category, catTasks]
       })
-      return finalTasks.map(finalTask => (<TasksList category={finalTask[0]} tasks={finalTask[1]} />))
-
+      return finalTasks.map(finalTask => (<TasksList key={`category_${finalTask[0].id}`} category={finalTask[0]} tasks={finalTask[1]} />))
     }
   }
   return (
@@ -56,7 +35,7 @@ const TasksListWrapper = () => {
       <Typography variant={'h3'}>
         Suas Tarefas
       </Typography>
-      {loadingTasks || loadingCategories ? <TasksListSkeleton /> : getTasks()}
+      {getTasks()}
     </Box>
   )
 }

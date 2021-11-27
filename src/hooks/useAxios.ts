@@ -14,7 +14,7 @@ interface useAxiosProps {
 }
 
 type ResponseAxios<T> =  {
-  commit: (data?:object | undefined) => void ;
+  commit: (data?:object | undefined, cb?:()=> void) => void ;
   response: T | null;
   error: string;
   loading: boolean;
@@ -30,7 +30,7 @@ export const useAxios = <T>({ method, path}: useAxiosProps):ResponseAxios<T> => 
   const [error, setError] = useState('');
   const [loading, setloading] = useState(false);
 
-  const commit = (data?:object | undefined) => {
+  const commit = (data?:object | undefined, cb?:()=> void) => {
     setloading(true);
     const item = window.localStorage.getItem('token');
     const tokenObj: TokenProps = JSON.parse(item!);
@@ -60,7 +60,9 @@ export const useAxios = <T>({ method, path}: useAxiosProps):ResponseAxios<T> => 
     })
     .finally(() => {
         setloading(false);
+        if(cb) {cb()}
     });
+
   };
 
 
