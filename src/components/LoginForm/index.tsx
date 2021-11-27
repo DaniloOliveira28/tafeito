@@ -1,12 +1,11 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import {Visibility, VisibilityOff} from '@mui/icons-material';
 import TextField from '../TextField';
 import Button from '../Button';
-import axios from 'axios';
 import Snackbar from '@mui/material/Snackbar';
 import { StyledCard, StyledCardContent } from './styles';
-
+import {useAxios} from '../../hooks/useAxios';
 interface IValues {
   username: string;
   password: string;
@@ -39,7 +38,6 @@ const LoginForm = (props:LoginFormProps) => {
     password: false
   })
 
-  const [isLoading, setIsLoading] = useState(false);
   
   const checkErrorValues = () => {
     setErrorForm({
@@ -47,6 +45,8 @@ const LoginForm = (props:LoginFormProps) => {
       password: values.password === '',
     });
   };
+
+  const {commit, response, error, loading} = useAxios<responseProps>({method:'POST', path:'usuarios/login'})
 
   const handleValues = (key:keyof IValues, value:string|boolean) => {
     setValues({
@@ -59,26 +59,26 @@ const LoginForm = (props:LoginFormProps) => {
     event.preventDefault();
   };
 
+  useEffect(() => {
+    if(response) {
+      updateToken(response.autenticacao);
+    }
+  }, [response]);
+
+  useEffect(() => {
+    if(error) {
+      console.error(error);
+      setOpenSnackbar(true);
+    }
+  }, [error]);
   const loginUser = () => {
     checkErrorValues();
     if(!(values.username === '') && !(values.password === '')) {
-      setIsLoading(true)
       const vars = {
         login: values.username,
         senha: values.password
       }
-      axios.post('http://localhost:8080/usuarios/login', vars)
-      .then((response) => {
-        const data:responseProps = response.data; 
-        updateToken(data.autenticacao);
-        setIsLoading(false);
-      }).catch(err =>{
-        console.error(err);
-        setIsLoading(false);
-        setOpenSnackbar(true);
-      }
-        );
-      
+      commit(vars);
     }
   }
 
@@ -140,11 +140,11 @@ const LoginForm = (props:LoginFormProps) => {
               )}}
           />
           <Button
-            disabled={isLoading}
+            disabled={loading}
           sx={{marginY: '16px'}}  fullWidth variant={'contained'} 
           onClick={() => { loginUser()}}
           >{
-            !isLoading ? 'Entrar' : <CircularProgress size={24}  color={'info'}/>}</Button>
+            !loading ? 'Entrar' : <CircularProgress size={24}  color={'info'}/>}</Button>
         </StyledCardContent>
       </StyledCard>
       <Snackbar
