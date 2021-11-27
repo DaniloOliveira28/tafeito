@@ -15,16 +15,23 @@ import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import {Task, Category} from '../../common/types';
+import { useAxios } from '../../hooks/useAxios';
 
 type TasksListProps = {
   tasks: Task[];
   category: Category;
+  updateTasks: () => void;
+}
+
+type ResponseDeleteTask = {
+
 }
 
 export default function TasksList(props:TasksListProps) {
   const {
     category,
-    tasks
+    tasks,
+    updateTasks
   } = props;
 
   const [checked, setChecked] = React.useState([0]);
@@ -41,6 +48,20 @@ export default function TasksList(props:TasksListProps) {
 
     setChecked(newChecked);
   };
+
+  const {
+    commit: commitTask,
+    loading: loadingTask,
+    response: taskId,
+    error: errorTask,
+  } = useAxios<ResponseDeleteTask>({
+    method: 'DELETE',
+    path: `tarefas`
+  });
+
+  const deleteTask = (taskId:number) => {
+    commitTask({}, updateTasks, `tarefas/${taskId}`)
+  }
 
   return (
     <>
@@ -67,7 +88,7 @@ export default function TasksList(props:TasksListProps) {
                 </IconButton>
                 </Tooltip>
                 <Tooltip title='Excluir tarefa'>
-                <IconButton edge="end" aria-label="excluir">
+                <IconButton edge="end" aria-label="excluir" onClick={() => {deleteTask(task.id)}}>
                   <Delete />
                 </IconButton>
                 </Tooltip>

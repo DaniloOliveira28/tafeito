@@ -90,9 +90,11 @@ const TaskInput = (props:TaskInputProps) => {
       </Box>
       <Box>
         <Tooltip title="Adicionar tarefa">
+          <span>
           <IconButton aria-label="add" onClick={saveTask} disabled={category === '' || task ===''} >
             <AddBoxIcon  fontSize="large" color={!(category === '' || task ==='') ? 'primary' : undefined} />
           </IconButton>
+          </span>
         </Tooltip>
       </Box>
     </Stack>

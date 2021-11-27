@@ -11,12 +11,14 @@ type TupleCatTasks = [Category, Task[]]
 type TasksListWrapperProps = {
   categories: Category[];
   tasks: Task[];
+  updateTasks: () => void;
 }
 const TasksListWrapper = (props:TasksListWrapperProps) => {
 
   const {
     categories,
-    tasks
+    tasks,
+    updateTasks
   } = props;
 
 
@@ -27,7 +29,7 @@ const TasksListWrapper = (props:TasksListWrapperProps) => {
         const catTasks = tasks.filter(task => task.id_categoria === category.id);
         return [category, catTasks]
       })
-      return finalTasks.map(finalTask => (<TasksList key={`category_${finalTask[0].id}`} category={finalTask[0]} tasks={finalTask[1]} />))
+      return finalTasks.map(finalTask => (<TasksList updateTasks={updateTasks} key={`category_${finalTask[0].id}`} category={finalTask[0]} tasks={finalTask[1]} />))
     }
   }
   return (
