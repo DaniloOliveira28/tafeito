@@ -5,8 +5,7 @@ import Tasks from '../../screens/Tasks';
 
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useNavigate } from 'react-router-dom';
-import { TokenProps } from '../../common/types';
-
+import { TokenProps } from '../../hooks/useAxios';
 
 const App = () => {
   const [tokenObj, setTokenObj] = useLocalStorage<TokenProps>("token", {token:null});

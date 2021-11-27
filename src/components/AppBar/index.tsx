@@ -1,5 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import axios from 'axios';
 
 import { AppBar as MuiAppBar, 
         Toolbar, 
@@ -12,12 +11,12 @@ import { AppBar as MuiAppBar,
 import AccountCircle from '@mui/icons-material/AccountCircle';
 
 import DialogName from '../DialogName';
-import { TokenProps } from '../../common/types';
-import { SignalCellularNull } from '@mui/icons-material';
-
+import { useAxios } from '../../hooks/useAxios';
 
 type AppBarProps = {
   updateToken: (token:string|null) => void
+  name: string,
+  setName: (newName:string) => void
 }
 
 type responseProps = {
@@ -27,14 +26,12 @@ type responseProps = {
 const AppBar = (props:AppBarProps) => {
 
   const {
-    updateToken
+    updateToken,
+    name, 
+    setName
   } = props;
 
-  const item = window.localStorage.getItem('token');
-  const tokenObj: TokenProps = JSON.parse(item!);
-
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [name, setName] = useState<null| string>(null);
   const [openedNameDialog, setOpenedNameDialog] = useState<boolean>(false);
 
   const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -49,42 +46,24 @@ const AppBar = (props:AppBarProps) => {
     setAnchorEl(null);
     updateToken(null);
   }
-
-  const loadName = () => {
-    axios.get('http://localhost:8080/usuarios/logado', { headers: {"Authorization" : `Bearer ${tokenObj!.token}`} })
-      .then((response) => {
-        const data:responseProps = response.data; 
-        setName(data.nome);
-      }).catch(err =>{
-        console.error(err);
-      }
-    );
-  }
+  const {commit, response, error, loading} = useAxios<responseProps>({ method: 'put', path: 'usuarios/logado/nome',  });
 
   const updateName = (newName:string) => {
-    axios.put('http://localhost:8080/usuarios/logado/nome', 
-    {
+    const data = {
       "nome": newName
-    },{ 
-        headers: {"Authorization" : `Bearer ${tokenObj!.token}`}
-     })
-      .then(() => {
-        setName(newName);
-      }).catch(err =>{
-        console.error(err);
-      }
-    );
+    }
+    commit(data);
+    setName(newName);
   };
 
   const changeName = () => {
     setAnchorEl(null);
-
     setOpenedNameDialog(true);
   }
-
   useEffect(() => {
-    loadName()
-  }, [])
+    if(response){
+    setName(response?.nome);}
+  }, [response])
 
 
   return (
