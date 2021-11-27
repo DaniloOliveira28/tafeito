@@ -14,8 +14,9 @@ import Label from '@mui/icons-material/Label';
 import Tooltip from '@mui/material/Tooltip';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
-import {Task, Category} from '../../common/types';
+import {Task, Category, Tag} from '../../common/types';
 import { useAxios } from '../../hooks/useAxios';
+import TagsInput from '../TagsInput';
 
 type TasksListProps = {
   tasks: Task[];
@@ -75,6 +76,21 @@ export default function TasksList(props:TasksListProps) {
     path: `tarefas/:id/reabrir`
   });
 
+  const {
+    commit: commitAddTag,
+  } = useAxios<ResponsePatchTask>({
+    method: 'POST',
+    path: `tarefas/:id/etiquetas`
+  });
+
+  const {
+    commit: commitRemoveTag,
+  } = useAxios<ResponsePatchTask>({
+    method: 'DELETE',
+    path: `tarefas/:id/etiquetas`
+  });
+
+
   const deleteTask = (taskId:number) => {
     commitTask({}, updateTasks, `tarefas/${taskId}`)
   }
@@ -86,7 +102,17 @@ export default function TasksList(props:TasksListProps) {
       commitReopenTask({}, updateTasks, `tarefas/${taskId}/reabrir`)
     }
   }
+  const addTag = (taskId:number, newTag:Tag) => {
 
+    commitAddTag({
+      etiqueta: newTag.etiqueta
+    }, updateTasks, `tarefas/${taskId}/etiquetas`)
+  }
+
+  const removeTag = (taskId:number, removedTag:Tag) => {
+
+    commitRemoveTag({}, updateTasks, `tarefas/${taskId}/etiquetas/${removedTag.etiqueta}`)
+  }
   return (
     <>
     <Typography variant='h4' >
@@ -101,11 +127,6 @@ export default function TasksList(props:TasksListProps) {
             key={task.id}
             secondaryAction={
               <Stack direction='row' spacing={1}>
-                <Tooltip title='Adicionar tag'>
-                <IconButton edge="end" aria-label="etiquetas">
-                  <Label />
-                </IconButton>
-                </Tooltip>
                 <Tooltip title='Adicionar Anexo'>
                 <IconButton edge="end" aria-label="anexos">
                   <AttachFile />
@@ -120,7 +141,7 @@ export default function TasksList(props:TasksListProps) {
             }
             disablePadding
           >
-            <ListItemButton role={undefined} dense>
+            <ListItem role={undefined} dense>
               <ListItemIcon>
                 <Checkbox
                   edge="start"
@@ -131,8 +152,20 @@ export default function TasksList(props:TasksListProps) {
                   onChange={(event:React.ChangeEvent<HTMLInputElement>) => updateTaskStatus(task.id, event.target.checked)}
                 />
               </ListItemIcon>
-              <ListItemText id={labelId} primary={task.descricao} sx={{textDecoration:task.concluida ? 'line-through' : 'none'}}/>
-            </ListItemButton>
+              <ListItemText id={labelId} 
+                primary={task.descricao} 
+                sx={{textDecoration:task.concluida ? 'line-through' : 'none'}}
+                secondary={(
+                <TagsInput
+                  selectedTags={(newTags) => {}}
+                  addTag={(newTag) => addTag(task.id, newTag)}
+                  removeTag={(removedTag) => removeTag(task.id, removedTag)}
+                  tags={task.etiquetas}
+                  placeholder="add Tags"
+                />)} 
+              />
+            </ListItem>
+            
           </ListItem>
         );
       })}
