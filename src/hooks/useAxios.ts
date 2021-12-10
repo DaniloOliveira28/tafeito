@@ -36,7 +36,7 @@ export const useAxios = <T>({ method, path }: useAxiosProps):ResponseAxios<T> =>
     const tokenObj: TokenProps = JSON.parse(item!);
 
     let headers = {};
-    if(tokenObj.token) {
+    if(tokenObj?.token) {
       headers = {"Authorization" : `Bearer ${tokenObj!.token}`}
     };
 
