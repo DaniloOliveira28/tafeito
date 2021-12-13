@@ -10,6 +10,13 @@ Aplicação Tafeito
 - Material-UI
 - ReactRouter
 
+# Instalação
+
+Usar node versao > 14 
+```
+npm install
+npm run dev:server
+```
 
 # Referências
 
