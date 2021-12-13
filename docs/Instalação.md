@@ -1,4 +1,6 @@
-# Inicialização do projeto
+# Inicialização do projeto vazio
+
+Utilize esses comandos para inicializar um projeto vazio.
 
 **NPM**
 
