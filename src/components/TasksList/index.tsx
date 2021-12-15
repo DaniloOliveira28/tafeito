@@ -18,6 +18,7 @@ import {Task, Category, Tag} from '../../common/types';
 import { useAxios } from '../../hooks/useAxios';
 import TagsInput from '../TagsInput';
 import TaskAttachFile from '../TaskAttachFile';
+import AttachFile from '../AttachFile';
 
 type TasksListProps = {
   tasks: Task[];
@@ -114,6 +115,7 @@ export default function TasksList(props:TasksListProps) {
 
     commitRemoveTag({}, updateTasks, `tarefas/${taskId}/etiquetas/${removedTag.etiqueta}`)
   }
+
   return (
     <>
     <Typography variant='h4' >
@@ -124,6 +126,7 @@ export default function TasksList(props:TasksListProps) {
         const labelId = `checkbox-list-label-${task.id}`;
 
         return (
+          <>
           <ListItem
             key={task.id}
             secondaryAction={
@@ -164,6 +167,14 @@ export default function TasksList(props:TasksListProps) {
             </ListItem>
             
           </ListItem>
+          <List component="div" disablePadding>
+            {
+              task.anexos.map((anexo) => {
+                return <AttachFile taskId={task.id} anexo={anexo}/>
+              })
+            }
+            </List>
+        </>
         );
       })}
     </List>
