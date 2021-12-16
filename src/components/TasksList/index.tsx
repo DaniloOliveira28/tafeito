@@ -1,6 +1,7 @@
 
 import React from 'react';
 
+import Box from '@mui/material/Box';
 import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 
@@ -126,12 +127,12 @@ export default function TasksList(props:TasksListProps) {
         const labelId = `checkbox-list-label-${task.id}`;
 
         return (
-          <>
+          <Box key={`task_${task.id}`}>
           <ListItem
             key={task.id}
             secondaryAction={
               <Stack direction='row' spacing={1}>
-                <TaskAttachFile />
+                <TaskAttachFile taskId={task.id} updateTasks={updateTasks}/>
                 <Tooltip title='Excluir tarefa'>
                 <IconButton edge="end" aria-label="excluir" onClick={() => {deleteTask(task.id)}}>
                   <Delete />
@@ -170,11 +171,11 @@ export default function TasksList(props:TasksListProps) {
           <List component="div" disablePadding>
             {
               task.anexos.map((anexo) => {
-                return <AttachFile taskId={task.id} anexo={anexo}/>
+                return <Box key={`${task.id}_${anexo.id}`}><AttachFile taskId={task.id} anexo={anexo}/></Box>
               })
             }
             </List>
-        </>
+        </Box>
         );
       })}
     </List>
