@@ -30,6 +30,7 @@ const TagsInput = (props:TagsInputProps) => {
   }, [selectedItem, selectedTags]);
 
   function handleKeyDown(event:any) {
+    console.log('xxxx_handleKeyDown')
     if (event.key === "Enter") {
       const newSelectedItem = [...selectedItem];
       const value:string = event?.target?.value?.trim()
@@ -54,9 +55,24 @@ const TagsInput = (props:TagsInputProps) => {
         setInputValue('');
       }
     }
+    // if (
+    //   selectedItem.length &&
+    //   !inputValue.length &&
+    //   event.key === "Backspace"
+    // ) {
+    //   setSelectedItem(selectedItem.slice(0, selectedItem.length - 1));
+    // }
   };
 
-
+  // function handleChange(item:any) {
+  //   console.log('xxx_handleChange', item)
+  //   let newSelectedItem = [...selectedItem];
+  //   if (newSelectedItem.indexOf(item) === -1) {
+  //     newSelectedItem = [...newSelectedItem, item];
+  //   }
+  //   setInputValue("");
+  //   setSelectedItem(newSelectedItem);
+  // }
 
   const handleDelete = (item:any) => () => {
     const newSelectedItem = [...selectedItem];
@@ -94,9 +110,10 @@ const TagsInput = (props:TagsInputProps) => {
                 InputProps={{
                   sx:{ padding: '0px', flexWrap:'wrap' },
                   startAdornment: selectedItem.map(item => (
-                    <Box mx={1} key={item.etiqueta}>
+                    <Box mx={1}>
 
                       <Chip
+                        key={item.etiqueta}
                         tabIndex={-1}
                         label={item.etiqueta}
                         onDelete={handleDelete(item)}
