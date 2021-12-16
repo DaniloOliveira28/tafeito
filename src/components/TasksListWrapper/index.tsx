@@ -29,7 +29,7 @@ const TasksListWrapper = (props:TasksListWrapperProps) => {
         const catTasks = tasks.filter(task => task.id_categoria === category.id);
         return [category, catTasks]
       })
-      return finalTasks.map(finalTask => (<TasksList updateTasks={updateTasks} key={`category_${finalTask[0].id}`} category={finalTask[0]} tasks={finalTask[1]} />))
+      return finalTasks.map(finalTask => (<Box key={`category_${finalTask[0].id}`} ><TasksList updateTasks={updateTasks} category={finalTask[0]} tasks={finalTask[1]} /></Box>))
     }
   }
   return (
