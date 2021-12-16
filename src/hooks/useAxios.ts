@@ -1,4 +1,4 @@
-import { Method } from 'axios'
+import { Method, AxiosResponseHeaders, ResponseType } from 'axios'
 import { useEffect, useState } from 'react'
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
@@ -14,7 +14,7 @@ interface useAxiosProps {
 }
 
 type ResponseAxios<T> =  {
-  commit: (data?:object | undefined, cb?:()=> void, newPath?:string, ) => void ;
+  commit: (data?:object | undefined, cb?:()=> void, newPath?:string, responseType?:ResponseType) => void ;
   response: T | null;
   error: string;
   loading: boolean;
@@ -30,7 +30,7 @@ export const useAxios = <T>({ method, path }: useAxiosProps):ResponseAxios<T> =>
   const [error, setError] = useState('');
   const [loading, setloading] = useState(false);
 
-  const commit = (data?:object | undefined, cb?:()=> void, newPath?:string) => {
+  const commit = (data?:object | undefined, cb?:()=> void, newPath?:string, responseType?:ResponseType) => {
     setloading(true);
     const item = window.localStorage.getItem('token');
     const tokenObj: TokenProps = JSON.parse(item!);
@@ -40,12 +40,13 @@ export const useAxios = <T>({ method, path }: useAxiosProps):ResponseAxios<T> =>
     if(tokenObj?.token) {
       headers = {"Authorization" : `Bearer ${tokenObj!.token}`}
     };
-
+ 
     axios({
       method, 
       url: `${baseUrl}${newPath ? newPath : path}`,
       headers,
-      data
+      data,
+      responseType
     })
     .then((res) => {
         setResponse(res.data);

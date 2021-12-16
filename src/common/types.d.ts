@@ -3,12 +3,19 @@ export type Tag = {
   etiqueta: string;
 }
 
+export type Anexo = {
+  id: number;
+  nome: string;
+  tamanho: number;
+  mime_type: string;
+}
+
 export type Task = {
   "id": number;
   "descricao": string;
   "concluida": boolean;
   "etiquetas": Tag[];
-  "anexos": string[];
+  "anexos": Anexo[];
   "id_categoria": number;
 }
 
